@@ -1,0 +1,16 @@
+This project contains the code and data for the dzone
+article on using Solr as a NoSQL endpoint for a Hadoop
+workflow.
+
+To build, run "ant job" at the top. This will create a
+file called hadoop2solr-job-1.0-SNAPSHOT.jar in the
+build directory, suitable for use as a Hadoop job jar.
+
+To run this job jar on a cluster:
+
+hadoop jar hadoop2solr-job-1.0-SNAPSHOT.jar com.bixolabs.tools.IndexTool \
+	-input <path to HDFS directory with input files>
+	-output <path to HDFS directory for resulting index>
+
+The output directory will contain a single 'part-00000' directory, which
+will contain a set of Lucene files for a single index.
