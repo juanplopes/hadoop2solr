@@ -9,7 +9,7 @@ build directory, suitable for use as a Hadoop job jar.
 To run this job jar on a cluster:
 
 hadoop jar hadoop2solr-job-1.0-SNAPSHOT.jar com.bixolabs.tools.IndexTool \
-	-input <path to HDFS directory with input files>
+	-input <path to HDFS directory with input files> \
 	-output <path to HDFS directory for resulting index>
 
 The output directory will contain a single 'part-00000' directory, which
