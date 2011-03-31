@@ -33,7 +33,7 @@ import com.bixolabs.index.IndexScheme;
 
 public class IndexWorkflow {
     
-    // Names of fields in the 
+    // Names of fields in each Crawl DB record
     public static final String URL_FN = "url";
     public static final String SCORE_FN = "score";
     public static final String DOMAIN_DEPTH_FN = "depth";
@@ -97,12 +97,12 @@ public class IndexWorkflow {
         urlPipe = new GroupBy(urlPipe);
         
         Tap solrIndexSink = new Hfs(new IndexScheme(SOLR_FIELDS,
-                        STORE_SETTINGS, 
-                        INDEX_SETTINGS, 
-                        StandardAnalyzer.class, 
-                        MAX_FIELD_LENGTH),
-                        outputDirPath.toString(),
-                        true);
+                                                    STORE_SETTINGS, 
+                                                    INDEX_SETTINGS, 
+                                                    StandardAnalyzer.class, 
+                                                    MAX_FIELD_LENGTH),
+                                                    outputDirPath.toString(),
+                                                    true);
 
         Properties props = HadoopUtils.getDefaultProperties(IndexWorkflow.class, false, conf);
         LoggingUtils.setLoggingProperties(props, options.getLogLevel());
