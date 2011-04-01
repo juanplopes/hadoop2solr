@@ -1,16 +1,58 @@
-This project contains the code and data for the dzone
-article on using Solr as a NoSQL endpoint for a Hadoop
-workflow.
+This project contains the code and data for the dzone article on using Solr as a NoSQL endpoint for a Hadoop workflow.
 
-To build, run "ant job" at the top. This will create a
-file called hadoop2solr-job-1.0-SNAPSHOT.jar in the
-build directory, suitable for use as a Hadoop job jar.
+Below are the steps that would get you up and running, assuming you have an AWS account set up as per http://openbixo.org/documentation/running-bixo-in-ec2/, and a git client installed.0
 
-To run this job jar on a cluster:
+====================================================
+Building the Hadoop job jar
+====================================================
 
-hadoop jar hadoop2solr-job-1.0-SNAPSHOT.jar com.bixolabs.tools.IndexTool \
-	-input <path to HDFS directory with input files> \
-	-output <path to HDFS directory for resulting index>
+% mkdir hadoop2solr-home
+% cd hadoop2solr-home
+% git clone git://github.com/bixolabs/hadoop2solr.git 
+% cd hadoop2solr
+% ant job
 
-The output directory will contain a single 'part-00000' directory, which
-will contain a set of Lucene files for a single index.
+====================================================
+Setting up the Hadoop cluster
+====================================================
+
+% cd hadoop2solr-home
+% git clone git://github.com/bixo/bixo.git bixo
+% cd bixo/ec2
+% . setenv.sh
+% hadoop-ec2 launch-cluster hadoop2solr 1 m1.large
+% hadoop-ec2 push hadoop2solr ../hadoop2solr/build/ hadoop2solr-job-1.0-SNAPSHOT.jar
+% hadoop-ec2 screen hadoop2solr
+
+====================================================
+Running the Hadoop jop (on the hadoop2solr cluster)
+====================================================
+
+% hadoop fs -mkdir /user/root/working
+% hadoop distcp s3n://bixolabs-dzone/urls /user/root/working/crawldb
+
+Monitor the job progress using your browser until the job completes successfully
+
+% hadoop jar hadoop2solr-job-1.0-SNAPSHOT.jar com.bixolabs.tools.IndexTool -input working/crawldb -output working/solr-index
+
+Monitor the job progress using your browser until the job completes successfully
+
+The output directory will contain a single 'part-00000' directory, which contains a set of Lucene files for a single index.
+
+% hadoop fs -copyToLocal /user/root/working/solr-index /mnt/solr-index
+
+====================================================
+Setting up Solr
+====================================================
+
+Use the AWS Console to kill off the slave.
+
+[copy solr.zip to server]
+[copy solr-conf to server]
+[ln -s xxx]
+
+====================================================
+Running Solr
+====================================================
+
+
