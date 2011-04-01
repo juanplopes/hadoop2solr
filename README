@@ -1,6 +1,6 @@
 This project contains the code and data for the dzone article on using Solr as a NoSQL endpoint for a Hadoop workflow.
 
-Below are the steps that would get you up and running, assuming you have an AWS account set up as per http://openbixo.org/documentation/running-bixo-in-ec2/, and a git client installed.0
+Below are the steps that would get you up and running, assuming you have an AWS account set up as per http://openbixo.org/documentation/running-bixo-in-ec2/, and a git client installed.
 
 ====================================================
 Building the Hadoop job jar
@@ -42,17 +42,25 @@ The output directory will contain a single 'part-00000' directory, which contain
 % hadoop fs -copyToLocal /user/root/working/solr-index /mnt/solr-index
 
 ====================================================
-Setting up Solr
+Setting up Solr (on the hadoop2solr master)
 ====================================================
 
-Use the AWS Console to kill off the slave.
-
-[copy solr.zip to server]
-[copy solr-conf to server]
-[ln -s xxx]
+% wget --no-check-certificate https://github.com/downloads/bixolabs/hadoop2solr/solr.zip
+% wget --no-check-certificate https://github.com/downloads/bixolabs/hadoop2solr/solr-conf.zip
+% unzip solr.zip
+% unzip solr-conf.zip
+% mkdir solr-data
+% cd solr-data
+% ln -s /mnt/solr-index/part-00000 index
+% cd ../solr
+% java -Dsolr.solr.home=../solr-conf -Dsolr.data.dir=../solr-data -jar start.jar > jetty.log 2>&1 &
 
 ====================================================
-Running Solr
+Cleaning up/testing
 ====================================================
 
+Use the AWS Console to kill off the slave server.
 
+Use the AWS Console to open up TCP port 8983 on the master server.
+
+Open a browser window on http://<ec2 server public name>:8983/solr/admin
